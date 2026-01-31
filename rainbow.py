@@ -3,34 +3,49 @@ import time
 
 sense = SenseHat()
 
-# Define 8 rainbow colors
+# More colors for a smoother rainbow
 rainbow_colors = [
-    [255, 0, 0],      # Red
-    [255, 127, 0],    # Orange
-    [255, 255, 0],    # Yellow
-    [0, 255, 0],      # Green
-    [0, 0, 255],      # Blue
-    [75, 0, 130],     # Indigo
-    [148, 0, 211],    # Violet
-    [255, 255, 255]   # White (optional, can remove)
+    [255, 0, 0],    # Red
+    [255, 64, 0],
+    [255, 128, 0],
+    [255, 191, 0],
+    [255, 255, 0],  # Yellow
+    [191, 255, 0],
+    [128, 255, 0],
+    [64, 255, 0],
+    [0, 255, 0],    # Green
+    [0, 255, 64],
+    [0, 255, 128],
+    [0, 255, 191],
+    [0, 255, 255],  # Cyan
+    [0, 191, 255],
+    [0, 128, 255],
+    [0, 64, 255],
+    [0, 0, 255],    # Blue
+    [64, 0, 255],
+    [128, 0, 255],
+    [191, 0, 255],
+    [255, 0, 255],  # Magenta
+    [255, 0, 191],
+    [255, 0, 128],
+    [255, 0, 64]
 ]
 
-# Repeat forever until Ctrl+C
 try:
     while True:
-        # Build 8x8 matrix
         pixels = []
         for row in range(8):
             for col in range(8):
-                # Shift colors to create moving rainbow
-                color_index = (col + row) % len(rainbow_colors)
+                # Use a diagonal shift for a flowing rainbow
+                color_index = (row + col) % len(rainbow_colors)
                 pixels.append(rainbow_colors[color_index])
-
         sense.set_pixels(pixels)
-        time.sleep(0.2)  # adjust speed (seconds)
-        
-        # Rotate the rainbow for next frame
+
+        # Shift the colors to create movement
         rainbow_colors = rainbow_colors[1:] + [rainbow_colors[0]]
+
+        # Faster tick (smaller sleep = faster animation)
+        time.sleep(0.1)
 
 except KeyboardInterrupt:
     sense.clear()
