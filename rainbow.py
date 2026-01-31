@@ -31,7 +31,7 @@ try:
         rainbow_colors = rainbow_colors[1:] + [rainbow_colors[0]]
 
         # Faster animation
-        time.sleep(0.02)
+        time.sleep(0.01)
 
 except KeyboardInterrupt:
     sense.clear()
