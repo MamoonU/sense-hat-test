@@ -6,40 +6,49 @@ sense = SenseHat()
 sense.clear()
 
 # Colors
-NORTH_COLOR = [255, 0, 0]   # Red arrow
+ARROW_COLOR = [255, 0, 0]   # Red arrow
 BG = [0, 0, 0]
 
-# 8 directions (N, NE, E, SE, S, SW, W, NW)
-directions = [
-    (0, -1),   # N
-    (1, -1),   # NE
-    (1, 0),    # E
-    (1, 1),    # SE
-    (0, 1),    # S
-    (-1, 1),   # SW
-    (-1, 0),   # W
-    (-1, -1)   # NW
-]
+CENTER_X = 3.5
+CENTER_Y = 3.5
+RADIUS = 3.2
 
-center = (3, 3)
+# Clear display
+def clear():
+    sense.set_pixels([BG] * 64)
 
-def draw_arrow(dx, dy):
-    sense.clear()
-    x, y = center
-    sense.set_pixel(x, y, NORTH_COLOR)
-    sense.set_pixel(x + dx, y + dy, NORTH_COLOR)
+# Draw a smooth arrow pointing at heading angle
+def draw_arrow(angle_deg):
+    clear()
+
+    # Convert degrees to radians (Sense HAT compass: 0° = North)
+    angle_rad = math.radians(angle_deg)
+
+    # Calculate arrow tip
+    tip_x = CENTER_X + RADIUS * math.sin(angle_rad)
+    tip_y = CENTER_Y - RADIUS * math.cos(angle_rad)
+
+    # Draw arrow shaft (interpolated points)
+    steps = 6
+    for i in range(steps + 1):
+        t = i / steps
+        x = CENTER_X + t * (tip_x - CENTER_X)
+        y = CENTER_Y + t * (tip_y - CENTER_Y)
+        px = int(round(x))
+        py = int(round(y))
+        if 0 <= px < 8 and 0 <= py < 8:
+            sense.set_pixel(px, py, ARROW_COLOR)
 
 try:
     while True:
-        heading = sense.get_compass()  # 0–360 degrees
+        # Get compass heading
+        heading = sense.get_compass()
 
-        # Convert heading to one of 8 directions
-        index = int((heading + 22.5) // 45) % 8
-        dx, dy = directions[index]
+        # Draw rotating arrow
+        draw_arrow(heading)
 
-        draw_arrow(dx, dy)
-        time.sleep(0.1)
+        time.sleep(0.05)
 
 except KeyboardInterrupt:
     sense.clear()
-    print("Compass stopped")
+    print("Smooth compass stopped")
