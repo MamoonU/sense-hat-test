@@ -7,7 +7,8 @@ sense = SenseHat()
 sense.clear()
 
 # Colors
-SNAKE_COLOR = [0, 255, 0]  # Green
+SNAKE_COLOR = [0, 255, 0]  # Green body
+SNAKE_HEAD_COLOR = [0, 200, 0]  # Darker green head
 FOOD_COLOR = [255, 0, 0]   # Red
 EMPTY_COLOR = [0, 0, 0]    # Off
 
@@ -72,18 +73,20 @@ def move_snake():
 # Draw function
 def draw():
     sense.clear()
-    for segment in snake:
+    for segment in snake[1:]:
         sense.set_pixel(segment[0], segment[1], SNAKE_COLOR)
+    # Draw head
+    sense.set_pixel(snake[0][0], snake[0][1], SNAKE_HEAD_COLOR)
     sense.set_pixel(food[0], food[1], FOOD_COLOR)
 
 # Main game loop
 game_over = False
-speed = 0.5  # Seconds per move
+speed = 0.3  # Faster movement
 while not game_over:
     game_over = not move_snake()
     draw()
     time.sleep(speed)
 
 # Game over message
-sense.show_message("GAME OVER", text_colour=[255,0,0])
+sense.show_message("GAME OVER", text_colour=[255,0,0], scroll_speed=0.05)
 sense.clear()
