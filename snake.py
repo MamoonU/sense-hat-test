@@ -61,12 +61,13 @@ def draw():
     sense.set_pixel(food[0], food[1], FOOD_COLOR)
 
 # Main game loop
+import builtins  # to hold global variables cleanly
+
 game_over = False
 speed = 0.3  # movement delay
 
 while not game_over:
-    global direction  # must be at top before any assignment
-    # Poll joystick events
+    # Use builtins to safely reference global direction
     for event in sense.stick.get_events():
         if event.action == 'pressed':
             if event.direction == 'up' and direction != 'DOWN':
@@ -81,7 +82,6 @@ while not game_over:
     game_over = not move_snake()
     draw()
     time.sleep(speed)
-
 
 # Game over message
 sense.show_message("GAME OVER", text_colour=[255, 0, 0], scroll_speed=0.05)
