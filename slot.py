@@ -49,7 +49,7 @@ def draw_slots(slots):
                     sense.set_pixel(base_x + dx, base_y + dy, color)
 
 # Spin animation (columns scroll downward, slower & longer)
-def spin(slots):
+def spin(slots)
 
     # Pause to let user view final result
     time.sleep(1.0)
