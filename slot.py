@@ -48,11 +48,14 @@ def draw_slots(slots):
                 for dy in range(2):
                     sense.set_pixel(base_x + dx, base_y + dy, color)
 
-# Spin animation
+# Spin animation (columns scroll downward)
 def spin(slots, spins=20):
     for _ in range(spins):
         for col in range(3):
-            slots[col] = [random.choice(FRUITS) for _ in range(3)]
+            # Scroll column downwards
+            slots[col] = [slots[col][2], slots[col][0], slots[col][1]]
+            # Add new random fruit at the top
+            slots[col][0] = random.choice(FRUITS)
         draw_slots(slots)
         time.sleep(0.08)
 
