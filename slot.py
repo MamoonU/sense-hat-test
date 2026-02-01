@@ -48,10 +48,42 @@ def draw_slots(slots):
                 for dy in range(2):
                     sense.set_pixel(base_x + dx, base_y + dy, color)
 
-# Spin animation (columns scroll downward, slower & longer)
-def spin(slots)
+# Flash win / loss
+def flash(color):
+    for _ in range(3):
+        sense.clear(color)
+        time.sleep(0.2)
+        draw_slots(slots)
+        time.sleep(0.2)
 
-    # Pause to let user view final result
+# Spin animation (columns scroll downward)
+def spin(slots):
+    spin_counts = [45, 60, 75]  # left, middle, right
+    max_spins = max(spin_counts)
+
+    for step in range(max_spins):
+        for col in range(3):
+            if step < spin_counts[col]:
+                # Move column downward
+                slots[col] = [slots[col][2], slots[col][0], slots[col][1]]
+                # New fruit enters at the top
+                slots[col][0] = random.choice(FRUITS)
+        draw_slots(slots)
+        time.sleep(0.10)  # Faster downward movement
+
+# Initial slots
+slots = [[random.choice(FRUITS) for _ in range(3)] for _ in range(3)]
+draw_slots(slots)
+
+# Joystick handler
+def handle_joystick(event):
+    global slots
+    if event.action != 'pressed':
+        return
+
+    spin(slots)
+
+    # Pause so user can inspect result
     time.sleep(1.0)
 
     # Check middle row
@@ -61,9 +93,7 @@ def spin(slots)
     else:
         flash(RED)
 
-    # Hold final result on screen longer
-    time.sleep(1.5)
-
+# Attach joystick AFTER handler is defined
 sense.stick.direction_any = handle_joystick
 
 try:
