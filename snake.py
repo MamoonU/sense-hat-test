@@ -10,7 +10,6 @@ sense.clear()
 SNAKE_COLOR = [0, 255, 0]      # Green body
 SNAKE_HEAD_COLOR = [0, 200, 0] # Darker green head
 FOOD_COLOR = [255, 0, 0]       # Red
-EMPTY_COLOR = [0, 0, 0]        # Off
 
 # Snake initial state
 snake = [(4, 4), (3, 4), (2, 4)]
@@ -58,18 +57,18 @@ def draw():
     sense.clear()
     for segment in snake[1:]:
         sense.set_pixel(segment[0], segment[1], SNAKE_COLOR)
-    # Draw head
     sense.set_pixel(snake[0][0], snake[0][1], SNAKE_HEAD_COLOR)
     sense.set_pixel(food[0], food[1], FOOD_COLOR)
 
-# Main game loop with joystick polling
+# Main game loop
 game_over = False
-speed = 0.3  # Snake movement speed
+speed = 0.3  # movement delay
 
 while not game_over:
-    # Poll joystick events
+    # Poll joystick events and update direction
     for event in sense.stick.get_events():
         if event.action == 'pressed':
+            global direction  # <- crucial for updating global variable
             if event.direction == 'up' and direction != 'DOWN':
                 direction = 'UP'
             elif event.direction == 'down' and direction != 'UP':
@@ -84,5 +83,5 @@ while not game_over:
     time.sleep(speed)
 
 # Game over message
-sense.show_message("GAME OVER", text_colour=[255,0,0], scroll_speed=0.05)
+sense.show_message("GAME OVER", text_colour=[255, 0, 0], scroll_speed=0.05)
 sense.clear()
