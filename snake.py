@@ -65,10 +65,10 @@ game_over = False
 speed = 0.3  # movement delay
 
 while not game_over:
-    # Poll joystick events and update direction
+    global direction  # must be at top before any assignment
+    # Poll joystick events
     for event in sense.stick.get_events():
         if event.action == 'pressed':
-            global direction  # <- crucial for updating global variable
             if event.direction == 'up' and direction != 'DOWN':
                 direction = 'UP'
             elif event.direction == 'down' and direction != 'UP':
@@ -81,6 +81,7 @@ while not game_over:
     game_over = not move_snake()
     draw()
     time.sleep(speed)
+
 
 # Game over message
 sense.show_message("GAME OVER", text_colour=[255, 0, 0], scroll_speed=0.05)
