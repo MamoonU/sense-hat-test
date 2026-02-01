@@ -16,15 +16,22 @@ BLACK = [0, 0, 0]
 
 FRUITS = [RED, YELLOW, BLUE, PINK, GREEN]
 
-# Slot grid x positions for columns
-COL_X = [1, 3, 5]
-ROW_Y = [0, 2, 4]
-LINE_Y = [1, 3]
+# Column x ranges (2 pixels wide per column)
+COL_X = [0, 3, 6]
+# Row y ranges (2 pixels tall per row)
+ROW_Y = [0, 3, 6]
+# Horizontal divider rows
+LINE_Y = [2, 5]
+# Vertical divider columns
+LINE_X = [2, 5]
 
-# Draw static white lines
+# Draw static white grid lines
 def draw_lines():
     for y in LINE_Y:
         for x in range(8):
+            sense.set_pixel(x, y, WHITE)
+    for x in LINE_X:
+        for y in range(8):
             sense.set_pixel(x, y, WHITE)
 
 # Draw the slot machine
@@ -33,9 +40,13 @@ def draw_slots(slots):
     draw_lines()
     for col in range(3):
         for row in range(3):
-            x = COL_X[col]
-            y = ROW_Y[row]
-            sense.set_pixel(x, y, slots[col][row])
+            color = slots[col][row]
+            base_x = COL_X[col]
+            base_y = ROW_Y[row]
+            # Draw 2x2 fruit block
+            for dx in range(2):
+                for dy in range(2):
+                    sense.set_pixel(base_x + dx, base_y + dy, color)
 
 # Spin animation
 def spin(slots, spins=20):
@@ -63,7 +74,6 @@ def handle_joystick(event):
     if event.action != 'pressed':
         return
 
-    # Spin
     spin(slots)
 
     # Check middle row
@@ -75,7 +85,6 @@ def handle_joystick(event):
 
 sense.stick.direction_any = handle_joystick
 
-# Keep program alive
 try:
     while True:
         time.sleep(0.1)
