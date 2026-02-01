@@ -7,17 +7,16 @@ sense = SenseHat()
 sense.clear()
 
 # Colors
-SNAKE_COLOR = [0, 255, 0]  # Green body
-SNAKE_HEAD_COLOR = [0, 200, 0]  # Darker green head
-FOOD_COLOR = [255, 0, 0]   # Red
-EMPTY_COLOR = [0, 0, 0]    # Off
+SNAKE_COLOR = [0, 255, 0]      # Green body
+SNAKE_HEAD_COLOR = [0, 200, 0] # Darker green head
+FOOD_COLOR = [255, 0, 0]       # Red
+EMPTY_COLOR = [0, 0, 0]        # Off
 
 # Snake initial state
 snake = [(4, 4), (3, 4), (2, 4)]
 direction = "RIGHT"
 
 # Food
-food = None
 def place_food():
     while True:
         f = (random.randint(0, 7), random.randint(0, 7))
@@ -25,22 +24,6 @@ def place_food():
             return f
 
 food = place_food()
-
-# Joystick handler
-def handle_joystick(event):
-    global direction
-    if event.action != 'pressed':
-        return
-    if event.direction == 'up' and direction != 'DOWN':
-        direction = 'UP'
-    elif event.direction == 'down' and direction != 'UP':
-        direction = 'DOWN'
-    elif event.direction == 'left' and direction != 'RIGHT':
-        direction = 'LEFT'
-    elif event.direction == 'right' and direction != 'LEFT':
-        direction = 'RIGHT'
-
-sense.stick.direction_any = handle_joystick
 
 # Move snake
 def move_snake():
@@ -79,10 +62,23 @@ def draw():
     sense.set_pixel(snake[0][0], snake[0][1], SNAKE_HEAD_COLOR)
     sense.set_pixel(food[0], food[1], FOOD_COLOR)
 
-# Main game loop
+# Main game loop with joystick polling
 game_over = False
-speed = 0.3  # Faster movement
+speed = 0.3  # Snake movement speed
+
 while not game_over:
+    # Poll joystick events
+    for event in sense.stick.get_events():
+        if event.action == 'pressed':
+            if event.direction == 'up' and direction != 'DOWN':
+                direction = 'UP'
+            elif event.direction == 'down' and direction != 'UP':
+                direction = 'DOWN'
+            elif event.direction == 'left' and direction != 'RIGHT':
+                direction = 'LEFT'
+            elif event.direction == 'right' and direction != 'LEFT':
+                direction = 'RIGHT'
+
     game_over = not move_snake()
     draw()
     time.sleep(speed)
