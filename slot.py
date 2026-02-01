@@ -50,8 +50,8 @@ def draw_slots(slots):
 
 # Spin animation (columns scroll downward, slower & longer)
 def spin(slots):
-    # Different spin lengths for each column (more realistic)
-    spin_counts = [30, 40, 50]
+    # Different spin lengths for each column (more realistic & longer)
+    spin_counts = [45, 60, 75]
 
     max_spins = max(spin_counts)
 
@@ -63,7 +63,7 @@ def spin(slots):
                 # New random fruit enters at the top
                 slots[col][0] = random.choice(FRUITS)
         draw_slots(slots)
-        time.sleep(0.12)  # Slower, more mechanical feel
+        time.sleep(0.18)  # Slower spin, more visible movement
 
 # Flash result
 def flash(color):
@@ -91,6 +91,9 @@ def handle_joystick(event):
         flash(GREEN)
     else:
         flash(RED)
+
+    # Hold final result on screen longer
+    time.sleep(1.5)
 
 sense.stick.direction_any = handle_joystick
 
