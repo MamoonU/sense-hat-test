@@ -58,7 +58,7 @@ def flash(color):
 
 # Spin animation (columns scroll downward)
 def spin(slots):
-    spin_counts = [45, 60, 75]  # left, middle, right
+    spin_counts = [30, 40, 50]  # land quicker: left, middle, right
     max_spins = max(spin_counts)
 
     for step in range(max_spins):
@@ -69,7 +69,7 @@ def spin(slots):
                 # New fruit enters at the top
                 slots[col][0] = random.choice(FRUITS)
         draw_slots(slots)
-        time.sleep(0.10)  # Faster downward movement
+        time.sleep(0.07)  # faster reel movement
 
 # Initial slots
 slots = [[random.choice(FRUITS) for _ in range(3)] for _ in range(3)]
